@@ -25,7 +25,7 @@
     <!-- AngularJS--> 
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-route.js"></script>
-    <script src="https://cdn.firebase.com/libs/angularfire/2.3.0/angularfire.min.js"></script>
+    <!-- <script src="https://cdn.firebase.com/libs/angularfire/2.3.0/angularfire.min.js"></script> -->
     <!-- Firebase3-->
     <!-- <script src="https://www.gstatic.com/firebasejs/3.4.1/firebase.js"></script>     -->
     <!-- <script src="js/ng-file-upload.min.js"></script> -->
@@ -34,13 +34,57 @@
     <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-firestore.js"></script>    
   </head>
 
-  <body>
+  <body ng-app="myApp" ng-controller="myCtrl">
     <p1>Hello World!</p1>
+    <div class="text-center" style="margin-top:5px; margin-bottom:-10px">
+        <h1 class="header text-center inline" id="classbar">Classes</h1>
+    </div>  
+    <div id="classlist">    
+        <div id="class{{$index}}" class="class" ng-repeat="x in userClasses">
+            <p1 id="classTitle{{$index}}">{{x}}</p1>
+        </div>     
+    </div>            
   </body>
 
 </html>
     <!-- SCRIPTS -->
-    <script src="main.js"></script>
+<script>
+var config = {
+  apiKey: "AIzaSyA-DLxL7vmdlMqh_a2t9aHQhidnfNu0O08",
+  authDomain: "blinding-fire-7640.firebaseapp.com",
+  databaseURL: "https://blinding-fire-7640.firebaseio.com",
+  storageBucket: "blinding-fire-7640.appspot.com",
+  messagingSenderId: "1028917595562",
+  projectId: "blinding-fire-7640"  
+};
+firebase.initializeApp(config);
+
+// Initialize Cloud Firestore through Firebase
+var db = firebase.firestore();
+
+
+var app = angular.module("myApp", []);
+app.controller("myCtrl", function($scope) {
+
+$scope.userClasses = {};
+
+db.collection("Databases/Test_Database/Classes").onSnapshot(querySnapshot => {
+    querySnapshot.forEach((doc) => {
+        // var id = doc.id;
+        // var test= {};
+        // test.id = doc.data();
+        // console.log(id)
+        $scope.userClasses[doc.id]= doc.data();;
+        console.log(doc.id, doc.data());
+        console.log($scope.userClasses)
+        $scope.$apply();
+    });
+});
+
+});
+</script>
+
+    <!-- <script src="main.js"></script> -->
     <!--Routing JS-->
     <!-- <script src="js/routing.js"></script> -->
     <!--Signin JS-->

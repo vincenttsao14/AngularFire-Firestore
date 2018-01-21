@@ -1,0 +1,95 @@
+  <head>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.9.0/firebase-firestore.js"></script>
+<script>
+//Initialize firebase  
+const config = {
+  apiKey: "AIzaSyA-DLxL7vmdlMqh_a2t9aHQhidnfNu0O08",
+  authDomain: "blinding-fire-7640.firebaseapp.com",
+  databaseURL: "https://blinding-fire-7640.firebaseio.com",
+  storageBucket: "blinding-fire-7640.appspot.com",
+  messagingSenderId: "1028917595562",
+  projectId:"blinding-fire-7640"
+};
+firebase.initializeApp(config);
+const firebaseRef = firebase.database();
+const databaseRef = 'Dev_Database/';
+const firebaseStorageRef = firebase.storage().ref();
+const firestore = firebase.firestore();
+function signin(){
+	var email = document.getElementById('email').value;
+	var password = document.getElementById('pass').value;
+firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+  // Handle Errors here.
+  var errorCode = error.code;
+  var errorMessage = error.message;
+  // ...
+});
+}
+firebase.auth().onAuthStateChanged(function(user) {
+  if (user) {
+    // User is signed in.
+    console.log(user)
+    var displayName = user.displayName;
+    var email = user.email;
+    var emailVerified = user.emailVerified;
+    var photoURL = user.photoURL;
+    var isAnonymous = user.isAnonymous;
+    var uid = user.uid;
+    var providerData = user.providerData;
+    var hidden = document.getElementById('hidden')
+    hidden.style="display:block"
+    // ...
+  } else {
+    // User is signed out.
+    // ...
+  }
+});
+(function(){
+	var app = angular.module("firestoreTest" , []);
+	app.controller("someData", ['$scope', function($scope){
+		$scope.someTest='blah';
+		$scope.add5 = function(){
+			var adding = $scope.someTest;
+			var addInfo = {
+				'hello': adding,
+				'ok': adding
+			};
+			firestore.doc('Databases/Test/').set(addInfo);
+		}
+		firestore.doc('Databases/Test').onSnapshot(function(doc){
+			$scope.repeat = doc.data();
+			$scope.$apply();
+		})
+	}]);
+})()
+
+</script>
+<style>
+#hidden{
+	display:none;
+}
+</style>
+</head>
+
+<body>
+	<div id="signin form">
+<input type="text" placeholder="email" id="email"/>
+<input type="password" placeholder="pass" id="pass"/>
+<button onclick=signin()> sign in </button>
+<button onclick=signout()> sign out </button>
+</div>
+<div ng-app="firestoreTest" id="hidden">
+signed in
+<div ng-controller="someData">
+	<div ng-repeat="data in repeat">
+		{{data}}
+	</div>
+	<input type="text" ng-model="someTest"><button ng-click="add5()"> Add 5 something</button>
+	<button> Delete data</button>
+</div>
+
+</div>
+</body>

@@ -16,8 +16,27 @@ firebase.initializeApp(config);
 
 // Initialize Cloud Firestore through Firebase
 var db = firebase.firestore();
-db.collection("Databases/Test_Database/Groups").get().then((querySnapshot) => {
+
+
+var app = angular.module("myApp", []);
+app.controller("myCtrl", function($scope) {
+
+db.collection("Databases/Test_Database/Classes").onSnapshot(querySnapshot => {
     querySnapshot.forEach((doc) => {
-        console.log(doc.data());
+    	var id = doc.id;
+    	// var test= 
+        $scope.userClasses.id = doc.data();
+        console.log(doc.id, doc.data());
+        console.log($scope.userClasses)
+        $scope.$apply();
     });
 });
+
+});
+
+// (function(){
+  // angular.module('floop').controller("floopCtrl", ["$scope", "$firebaseArray", "$firebaseObject", "userdata", "$location", "notifications","studentdata", "$timeout", "$route",
+  //   function($scope, $firebaseArray, $firebaseObject, userdata, $location, notifications, studentdata, $timeout, $route) {
+
+  // }])
+// })
